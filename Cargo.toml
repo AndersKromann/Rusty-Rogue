@@ -1,0 +1,7 @@
+[package]
+name = "rusty-rogue"
+version = "0.1.0"
+authors = ["Anders Kromann <anders_kromann@hotmail.com>"]
+edition = "2018"
+
+[dependencies]
