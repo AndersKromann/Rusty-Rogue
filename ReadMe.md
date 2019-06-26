@@ -6,4 +6,4 @@ https://tomassedovic.github.io/roguelike-tutorial/
 
 current progress:
 
-https://tomassedovic.github.io/roguelike-tutorial/part-3-dungeon.html
+https://tomassedovic.github.io/roguelike-tutorial/part-7-gui.html
