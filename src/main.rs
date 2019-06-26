@@ -64,16 +64,17 @@ impl Rect {
 #[derive(Clone, Copy, Debug)]
 struct Tile {
     blocked: bool,
+    explored: bool,
     block_sight: bool,
 }
 
 impl Tile {
     pub fn empty() -> Self {
-        Tile{blocked: false, block_sight: false}
+        Tile{blocked: false, explored: false, block_sight: false}
     }
 
     pub fn wall() -> Self {
-        Tile{blocked: true, block_sight: true}
+        Tile{blocked: true, explored: false, block_sight: true}
     }
 }
 
@@ -114,7 +115,7 @@ fn main() {
     tcod::system::set_fps(LIMIT_FPS);
 
     //make map first
-    let (map, (player_x, player_y)) = make_map();
+    let (mut map, (player_x, player_y)) = make_map();
     // so we know where to place the player
     let player = Object::new(player_x, player_y, '@', WHITE);
 
@@ -144,7 +145,7 @@ fn main() {
             &mut root, 
             &mut con, 
             &objects, 
-            &map,
+            &mut map,
             &mut fov_map,
             fov_recompute
         );
@@ -161,7 +162,7 @@ fn main() {
     }
 }
 
-fn render_all(root: &mut Root, con: &mut Offscreen, objects: &[Object], map: &Map, fov_map: &mut FovMap, fov_recompute: bool) {
+fn render_all(root: &mut Root, con: &mut Offscreen, objects: &[Object], map: &mut Map, fov_map: &mut FovMap, fov_recompute: bool) {
     // recompute FOV
     if fov_recompute {
         let player = &objects[0];
@@ -178,7 +179,13 @@ fn render_all(root: &mut Root, con: &mut Offscreen, objects: &[Object], map: &Ma
                 (true, true) => COLOR_LIGHT_WALL,
                 (true, false) => COLOR_LIGHT_GROUND, 
             };
-            con.set_char_background(x, y, color, BackgroundFlag::Set);
+            let explored = &mut map[x as usize][y as usize].explored;
+            if visible {
+                *explored = true;
+            }
+            if *explored {
+                con.set_char_background(x, y, color, BackgroundFlag::Set);
+            }
         }
     }
 
